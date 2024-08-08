@@ -3,10 +3,7 @@ package dev.bengi.userservice.model;
 import dev.bengi.userservice.enumeration.Role;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 @Entity(name = "users")
 @Getter
@@ -27,4 +24,7 @@ public class User  extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Embedded
+    private UserDetails userDetails;
 }
