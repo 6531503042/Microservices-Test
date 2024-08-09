@@ -1,24 +1,19 @@
----
 version: '3.7'
 services:
-
-    # Eureka Server / Registry Service
-    registry-service:
-        build:
-            context: ./registry-service
-        container_name: registry-service
-        restart: always
-        ports:
-            - "8761:8761"
-        expose:
-            - 8761 
-        environment:
-            - SPRING_PROFILES_ACTIVE=registry
-            - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
-            - EUREKA_CLIENT_FETCH_REGISTRY=false
-            - EUREKA_SERVER_ENABLE_SELF_PRESERVATION=false
-        healthcheck:
-        test: ["CMD", "curl", "--fail", "--silent", "localhost:8761/actuator/health 2>&1 | grep UP || exit 1"]
-        interval: 30s
-        timeout: 10s
-        retries: 5
+  registry-service:
+    build:
+      context: ./registry-service
+    container_name: registry-service
+    restart: always
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=registry
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+      - EUREKA_SERVER_ENABLE_SELF_PRESERVATION=false
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8761/actuator/health | grep UP || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
