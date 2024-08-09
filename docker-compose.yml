@@ -1,0 +1,15 @@
+---
+version: '3.7'
+services:
+
+    ## Registry Server
+    registry-service:
+        image: dev.bengi/registry-service
+        container_name: registry-service
+        restart: always
+        ports:
+            - "8761:8761"
+        environment:
+            - SPRING_PROFILES_ACTIVE=registry
+        depends_on:
+            - eureka-server
