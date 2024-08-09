@@ -53,7 +53,9 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          docker buildx build --push --tag ${{ secrets.DOCKER_USERNAME }}/microservices-test:${{ github.sha }} .
+          IMAGE_TAG="${{ secrets.DOCKER_USERNAME }}/microservices-test:${{ github.sha }}"
+          echo "Building Docker image with tag $IMAGE_TAG"
+          docker buildx build --push --tag $IMAGE_TAG .
 
 #   deploy:
 #     runs-on: ubuntu-latest
