@@ -79,7 +79,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          dockerfile: Dockerfile # Ensure this path is correct
+          dockerfile: registry-service/Dockerfile
           push: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/microservices-test:latest
 
@@ -99,7 +99,7 @@ jobs:
         with:
           context: .
         #   file: registry-service/Dockerfile
-          dockerfile: Dockerfile
+          dockerfile: registry-service/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/microservices-test:latest
         # run: |
