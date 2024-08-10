@@ -35,6 +35,9 @@ jobs:
       - name: Package application
         run: mvn package -DskipTests
 
+      - name: List files in target directory
+        run: ls -al target/
+
       - name: Upload JAR file as artifact
         uses: actions/upload-artifact@v3
         with:
