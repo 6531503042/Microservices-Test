@@ -84,15 +84,11 @@ jobs:
       - name: Verify Docker login
         run: docker info
 
-      - name: Build Docker image
+      - name: Build and Push Docker image
         run: |
           IMAGE_TAG="6531503042/microservices-test:latest"
           echo "Building Docker image with tag $IMAGE_TAG"
           docker build -t $IMAGE_TAG -f registry-service/Dockerfile registry-service/
-
-      - name: Push Docker image
-        run: |
-          IMAGE_TAG="6531503042/microservices-test:latest"
           echo "Pushing Docker image with tag $IMAGE_TAG"
           docker push $IMAGE_TAG
 
