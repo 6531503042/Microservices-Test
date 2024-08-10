@@ -91,6 +91,7 @@ jobs:
           file: registry-service/Dockerfile
           push: true
           tags: 6531503042/microservices-test:latest
+          ##f
         # run: |
         #   IMAGE_TAG="6531503042/microservices-test:latest"
         #   echo "Building Docker image with tag $IMAGE_TAG"
