@@ -1,0 +1,117 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.m2/wrapper
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      # registry - Service mvn build
+      - name: Build with Maven
+        run: mvn clean install -f registry-service/pom.xml
+
+      - name: Package application
+        run: mvn package -f registry-service/pom.xml
+
+      # List files in target directory for registry-service
+      - name: List files in target directory for registry-service
+        run: |
+          if [ -d "registry-service/target" ]; then
+            ls -al registry-service/target/
+          else
+            echo "Target directory does not exist"
+            exit 1
+          fi
+        
+      - name: Upload JAR file as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: registry-service
+          path: registry-service/target/*.jar
+
+  build-image-docker:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download JAR file artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: registry-service
+          path: registry-service/target/
+
+      - name: List files in registry-service directory
+        run: ls -al registry-service/target/
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          IMAGE_TAG="6531503042/microservices-test:latest"
+          echo "Building Docker image with tag $IMAGE_TAG"
+          docker build -t $IMAGE_TAG -f registry-service/Dockerfile registry-service/
+
+      - name: Push Docker image
+        run: |
+          IMAGE_TAG="6531503042/microservices-test:latest"
+          echo "Pushing Docker image with tag $IMAGE_TAG"
+          docker push $IMAGE_TAG
+
+      # Uncomment and configure below sections if needed for additional services
+
+      # # order - Service mvn build
+      # - name: Build with Maven
+      #   run: mvn clean install -f order-service/pom.xml
+
+      # - name: Package application
+      #   run: mvn package -f order-service/pom.xml
+
+      # # product - Service mvn build
+      # - name: Build with Maven
+      #   run: mvn clean install -f product-service/pom.xml
+
+      # - name: Package application
+      #   run: mvn package -f product-service/pom.xml
+
+      # # User - Service mvn build
+      # - name: Build with Maven
+      #   run: mvn clean install -f user-service/pom.xml
+
+      # - name: Package application
+      #   run: mvn package -f user-service/pom.xml
