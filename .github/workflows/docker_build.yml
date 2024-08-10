@@ -46,7 +46,7 @@ jobs:
         run: |
           IMAGE_TAG="6531530402/microservices-test:latest"
           echo "Building Docker image with tag $IMAGE_TAG"
-          docker buildx build --push --tag $IMAGE_TAG .
+          docker buildx build --push --tag $IMAGE_TAG -f registry-service/Dockerfile registry-service
 
       - name: Post-build cleanup
         run: |
