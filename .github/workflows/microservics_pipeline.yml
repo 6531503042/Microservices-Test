@@ -85,12 +85,17 @@ jobs:
         run: docker info
 
       - name: Build and Push Docker image
-        run: |
-          IMAGE_TAG="6531503042/microservices-test:latest"
-          echo "Building Docker image with tag $IMAGE_TAG"
-          docker build -t $IMAGE_TAG -f registry-service/Dockerfile registry-service/
-          echo "Pushing Docker image with tag $IMAGE_TAG"
-          docker push $IMAGE_TAG
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: 6531503042/microservices-test:latest
+        # run: |
+        #   IMAGE_TAG="6531503042/microservices-test:latest"
+        #   echo "Building Docker image with tag $IMAGE_TAG"
+        #   docker build -t $IMAGE_TAG -f registry-service/Dockerfile registry-service/
+        #   echo "Pushing Docker image with tag $IMAGE_TAG"
+        #   docker push $IMAGE_TAG
 
       # Uncomment and configure below sections if needed for additional services
 
