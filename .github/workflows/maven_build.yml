@@ -30,15 +30,15 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Build with Maven
-        run: mvn clean install
+        run: mvn clean install -f registry-service/pom.xml
 
       - name: Package application
-        run: mvn package
+        run: mvn package -f registry-service/pom.xml
 
       - name: List files in target directory
         run: |
-          if [ -d "target" ]; then
-            ls -al target/
+          if [ -d "registry-service/target" ]; then
+            ls -al registry-service/target/
           else
             echo "Target directory does not exist"
             exit 1
@@ -48,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: registry-service-jar
-          path: target/registry-service-0.0.1-SNAPSHOT.jar
+          path: registry-service/target/registry-service-0.0.1-SNAPSHOT.jar
