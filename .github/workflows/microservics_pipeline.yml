@@ -87,7 +87,7 @@ jobs:
       - name: Build and Push Docker image
         uses: docker/build-push-action@v3
         with:
-          context: registry-service/
+          context: .
           file: registry-service/Dockerfile
           push: true
           tags: 6531503042/microservices-test:latest
