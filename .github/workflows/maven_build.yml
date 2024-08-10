@@ -34,3 +34,9 @@ jobs:
 
       - name: Package application
         run: mvn package -DskipTests
+
+      - name: Upload JAR file as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: registry-service-jar
+          path: target/registry-service.jar
