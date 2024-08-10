@@ -35,9 +35,10 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          IMAGE_TAG="6531530402/microservices-test:latest"
-          echo "Building Docker image with tag $IMAGE_TAG"
-          docker buildx build --push --tag $IMAGE_TAG .
+            IMAGE_TAG="6531530402/microservices-test:latest"
+            echo "Building Docker image with tag $IMAGE_TAG"
+            docker buildx build --push --tag $IMAGE_TAG ./registry-service
+        
 
       - name: Post-build cleanup
         run: |
