@@ -29,14 +29,12 @@ jobs:
             ~/.m2/wrapper
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
-      # registry - Service mvn build
       - name: Build with Maven
         run: mvn clean install -f registry-service/pom.xml
 
       - name: Package application
         run: mvn package -f registry-service/pom.xml
 
-      # List files in target directory for registry-service
       - name: List files in target directory for registry-service
         run: |
           if [ -d "registry-service/target" ]; then
@@ -45,7 +43,7 @@ jobs:
             echo "Target directory does not exist"
             exit 1
           fi
-        
+
       - name: Upload JAR file as artifact
         uses: actions/upload-artifact@v3
         with:
@@ -68,22 +66,12 @@ jobs:
 
       - name: List files in registry-service directory
         run: ls -al registry-service/target/
-      
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          dockerfile: registry-service/Dockerfile
-          push: false
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/microservices-test:latest
-
-
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -91,17 +79,22 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Verify Docker login
-        run: docker info
-
-      - name: Push the docker image to docker hub
+      - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
-        #   file: registry-service/Dockerfile
-          dockerfile: registry-service/Dockerfile
+          context: ./registry-service
+          dockerfile: Dockerfile
+          push: false
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/microservices-test:latest
+
+      - name: Push Docker image to Docker Hub
+        uses: docker/build-push-action@v4
+        with:
+          context: ./registry-service
+          dockerfile: Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/microservices-test:latest
+
         # run: |
         #   IMAGE_TAG="6531503042/microservices-test:latest"
         #   echo "Building Docker image with tag $IMAGE_TAG"
