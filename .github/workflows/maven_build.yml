@@ -36,7 +36,13 @@ jobs:
         run: mvn package -DskipTests
 
       - name: List files in target directory
-        run: ls -al target/
+        run: |
+          if [ -d "target" ]; then
+            ls -al target/
+          else
+            echo "Target directory does not exist"
+            exit 1
+          fi
 
       - name: Upload JAR file as artifact
         uses: actions/upload-artifact@v3
