@@ -1,3 +1,7 @@
 FROM openjdk:17-jdk-alpine
-COPY target/registry-service.jar /app/registry-service.jar
-ENTRYPOINT ["java", "-jar", "/app/registry-service.jar"]
+
+WORKDIR /app
+
+COPY target/registry-service-0.0.1-SNAPSHOT.jar /app/registry-service.jar
+
+ENTRYPOINT ["java", "-jar", "registry-service.jar"]
