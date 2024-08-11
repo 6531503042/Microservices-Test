@@ -95,13 +95,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/microservices-test:latest
 
-        # run: |
-        #   IMAGE_TAG="6531503042/microservices-test:latest"
-        #   echo "Building Docker image with tag $IMAGE_TAG"
-        #   docker build -t $IMAGE_TAG -f registry-service/Dockerfile registry-service/
-        #   echo "Pushing Docker image with tag $IMAGE_TAG"
-        #   docker push $IMAGE_TAG
-
       # Uncomment and configure below sections if needed for additional services
 
       # # order - Service mvn build
