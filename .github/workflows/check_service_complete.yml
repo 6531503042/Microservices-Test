@@ -34,25 +34,17 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Build with Maven
-        id: maven-build
-        run: |
-          mvn clean install -f ${{ matrix.service }}/pom.xml
-        continue-on-error: true
+        id: build
+        run: mvn clean install -f ${{ matrix.service }}/pom.xml
 
-      - name: Check if build was successful
+      - name: Check build result
         id: check_build
         run: |
-          if [ -d "${{ matrix.service }}/target" ] && ls ${{ matrix.service }}/target/*.jar 1> /dev/null 2>&1; then
-            echo "Build successful for ${{ matrix.service }}"
+          if [ $? -eq 0 ]; then
             echo "BUILD_SUCCESS=true" >> $GITHUB_ENV
           else
-            echo "Build failed for ${{ matrix.service }}"
             echo "BUILD_SUCCESS=false" >> $GITHUB_ENV
           fi
-
-      - name: Package application
-        if: env.BUILD_SUCCESS == 'true'
-        run: mvn package -f ${{ matrix.service }}/pom.xml
 
       - name: List files in target directory
         if: env.BUILD_SUCCESS == 'true'
