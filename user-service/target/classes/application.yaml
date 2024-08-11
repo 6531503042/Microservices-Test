@@ -1,0 +1,28 @@
+# Spring Configuration
+spring:
+  application:
+    name: user-service
+  profiles:
+    active: user
+  cloud:
+    config:
+      enabled: false
+
+server:
+  port: ${PORT:8080}
+
+#Eureka Config
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+# Logging Configuration
+logging:
+  level:
+    org.springframework.web: DEBUG
+
+
+
