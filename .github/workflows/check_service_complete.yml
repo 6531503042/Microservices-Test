@@ -34,6 +34,7 @@ jobs:
           else
             echo "Service ${{ matrix.service }} is not complete"
             echo "SERVICE_COMPLETE=false" >> $GITHUB_ENV
+            exit 0
           fi
 
       - name: Cache Maven packages
