@@ -42,7 +42,7 @@ jobs:
       - name: Check if build was successful
         id: check_build
         run: |
-          if [ -d "${{ matrix.service }}/target" ] && [ -f "${{ matrix.service }}/target/*.jar" ]; then
+          if [ -d "${{ matrix.service }}/target" ] && ls ${{ matrix.service }}/target/*.jar 1> /dev/null 2>&1; then
             echo "Build successful for ${{ matrix.service }}"
             echo "BUILD_SUCCESS=true" >> $GITHUB_ENV
           else
@@ -56,13 +56,7 @@ jobs:
 
       - name: List files in target directory
         if: env.BUILD_SUCCESS == 'true'
-        run: |
-          if [ -d "${{ matrix.service }}/target" ]; then
-            ls -al ${{ matrix.service }}/target/
-          else
-            echo "Target directory does not exist"
-            exit 1
-          fi
+        run: ls -al ${{ matrix.service }}/target/
 
       - name: Upload JAR file as artifact
         if: env.BUILD_SUCCESS == 'true'
