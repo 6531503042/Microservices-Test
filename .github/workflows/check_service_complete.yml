@@ -34,14 +34,7 @@ jobs:
           else
             echo "Service ${{ matrix.service }} is not complete"
             echo "SERVICE_COMPLETE=false" >> $GITHUB_ENV
-          firun: |
-           if [ -f "${{ matrix.service }}/completed" ]; then
-             echo "Service ${{ matrix.service }} is complete"
-             echo "SERVICE_COMPLETE=true" >> $GITHUB_ENV
-           else
-             echo "Service ${{ matrix.service }} is not complete"
-             echo "SERVICE_COMPLETE=false" >> $GITHUB_ENV
-           fi
+          fi
 
       - name: Cache Maven packages
         uses: actions/cache@v4
@@ -50,24 +43,24 @@ jobs:
             ~/.m2/repository
             ~/.m2/wrapper
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        if: env.SERVICE_COMPLETE != 'true'
-
-      - name: Build with Maven
-        run: mvn clean install -f r${{ matrix.service }}/pom.xml
         if: env.SERVICE_COMPLETE == 'true'
 
-
-#      - name: List files in target directory for r${{ matrix.service }}
-#        run: |
-#          if [ -d "r${{ matrix.service }}/target" ]; then
-#            ls -al r${{ matrix.service }}/target/
-#          else
-#            echo "Target directory does not exist"
-#            exit 1
-#          fi
+      - name: Build with Maven
+        run: mvn clean install -f ${{ matrix.service }}/pom.xml
+        if: env.SERVICE_COMPLETE == 'true'
 
       - name: Package application
         run: mvn package -f ${{ matrix.service }}/pom.xml
+        if: env.SERVICE_COMPLETE == 'true'
+
+      - name: List files in target directory
+        run: |
+          if [ -d "${{ matrix.service }}/target" ]; then
+            ls -al ${{ matrix.service }}/target/
+          else
+            echo "Target directory does not exist"
+            exit 1
+          fi
         if: env.SERVICE_COMPLETE == 'true'
 
       - name: Upload JAR file as artifact
@@ -82,7 +75,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        service: [ registry-service, user-service ]
+        service: [registry-service, user-service]
 
     steps:
       - name: Checkout code
